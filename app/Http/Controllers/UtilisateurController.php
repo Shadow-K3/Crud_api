@@ -12,9 +12,11 @@ class UtilisateurController extends Controller
     // LISTE DES UTILISATEURS
     public function index()
     {
+
+        $utilisateurs = Utilisateur::all();
         return response()->json([
             'status' => 'success',
-            'data' => Utilisateur::all()
+            'data' => $utilisateurs
         ]);
     }
 
