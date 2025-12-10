@@ -7,42 +7,89 @@ use Illuminate\Http\Request;
 
 class ProduitController extends Controller
 {
-    // LISTE DES PRODUITS
+   // LISTE DES PRODUITS
     public function index()
     {
-        return Produit::all();
+        return response()->json([
+            'status' => 'success',
+            'data' => Produit::all()
+        ]);
     }
 
     // AJOUTER UN PRODUIT
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nom' => 'required',
             'prix' => 'required|integer',
             'stock' => 'required|integer',
         ]);
 
-        return Produit::create($request->all());
+        $produit = Produit::create($validated);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Produit créé avec succès',
+            'data' => $produit
+        ], 201);
     }
 
     // AFFICHER UN PRODUIT
     public function show($id)
     {
-        return Produit::findOrFail($id);
+        $produit = Produit::find($id);
+
+        if (!$produit) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Produit introuvable'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $produit
+        ]);
     }
 
     // MODIFIER UN PRODUIT
     public function update(Request $request, $id)
     {
-        $produit = Produit::findOrFail($id);
+        $produit = Produit::find($id);
+
+        if (!$produit) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Produit introuvable'
+            ], 404);
+        }
+
         $produit->update($request->all());
-        return $produit;
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Produit modifié avec succès',
+            'data' => $produit
+        ]);
     }
 
     // SUPPRIMER UN PRODUIT
     public function destroy($id)
     {
-        Produit::findOrFail($id)->delete();
-        return response()->json(['message' => 'Produit supprimé']);
+        $produit = Produit::find($id);
+
+        if (!$produit) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Produit introuvable'
+            ], 404);
+        }
+
+        $produit->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Produit supprimé avec succès'
+        ]);
     }
 }
