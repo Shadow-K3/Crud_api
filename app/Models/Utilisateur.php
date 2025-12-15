@@ -2,22 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 
-class Utilisateur extends Model
+class Utilisateur extends Authenticatable
 {
-    //
-    // Nom de la table
-    protected $table = 'utilisateurs';
+    use HasApiTokens, Notifiable;
 
-    // Champs modifiables
     protected $fillable = [
         'nom',
         'email',
-        'password',
+        'password'
     ];
 
-    // Masquer le mot de passe dans les réponses JSON
     protected $hidden = [
         'password'
     ];
